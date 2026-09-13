@@ -1,0 +1,31 @@
+# Character map fully replaced by the user's own measurements.
+stepper:
+  - platform: uln2003
+    id: wiji_stepper_1
+    pin_a: GPIO4
+    pin_b: GPIO7
+    pin_c: GPIO5
+    pin_d: GPIO6
+    max_speed: 600 steps/s
+  - platform: uln2003
+    id: wiji_stepper_2
+    pin_a: GPIO8
+    pin_b: GPIO11
+    pin_c: GPIO9
+    pin_d: GPIO10
+    max_speed: 600 steps/s
+
+wijiboard:
+  - id: wiji
+    stepper_1: wiji_stepper_1
+    stepper_2: wiji_stepper_2
+    use_default_letters: false
+    return_home_between_letters: false
+    rest_position: [-2048, 0]
+    letters:
+      "y":
+        x: -20.0
+        y: 100.0
+      "n":
+        x: 20.0
+        y: 100.0
