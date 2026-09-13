@@ -20,12 +20,21 @@ external_components:
   - source: github://NotWoods/esphome@claude/wijiboard-esphome-component-16o3ux
     components: [wijiboard]
 
+# The stock WijiBoard PlatformIO board is an Adafruit Feather ESP32-S3 without PSRAM,
+# carrying 8MB of flash instead of the Feather's 4MB. ESPHome already knows that board and
+# sets the flash size, mode and speed itself, so the custom board file is not needed here.
 esp32:
   board: adafruit_feather_esp32s3_nopsram
+  flash_size: 8MB
+  flash_mode: qio
+  flash_frequency: 80MHZ
+  cpu_frequency: 240MHZ
   framework:
     type: esp-idf
 
+# The module logs over its native USB port rather than a separate serial chip.
 logger:
+  hardware_uart: USB_SERIAL_JTAG
 
 api:
   encryption:

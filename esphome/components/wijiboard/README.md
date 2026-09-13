@@ -12,6 +12,31 @@ The linkage geometry, the step count of a 28BYJ-48, the homing targets and the l
 word the board will queue are fixed in `wijiboard.cpp` rather than configured, because they
 describe the board itself rather than a preference. The component always homes at start-up.
 
+## Board
+
+The stock WijiBoard PlatformIO board file is an Adafruit Feather ESP32-S3 without PSRAM
+carrying 8MB of flash, and ESPHome already knows that board, so no custom board file is
+needed:
+
+```yaml
+esp32:
+  board: adafruit_feather_esp32s3_nopsram
+  flash_size: 8MB
+  flash_mode: qio
+  flash_frequency: 80MHZ
+  cpu_frequency: 240MHZ
+  framework:
+    type: esp-idf
+
+logger:
+  hardware_uart: USB_SERIAL_JTAG
+```
+
+ESPHome writes the flash size, mode and speed into the build itself, so those values
+override whatever the board file says. The `arduino` section of the board file and its
+`ARDUINO_USB_CDC_ON_BOOT` flags do not apply under ESP-IDF; `hardware_uart` above is what
+puts the logs on the native USB port instead.
+
 ## Wiring
 
 The board has two 28BYJ-48 stepper motors behind ULN2003 drivers. Declare them with the
