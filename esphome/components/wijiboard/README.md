@@ -32,13 +32,23 @@ logger:
   hardware_uart: USB_CDC
 ```
 
-ESPHome writes the flash size, mode and speed into the build itself, so those values
-override whatever the board file says. The framework here matches the WijiBoard's own
-`platformio.ini`; `esp-idf` works just as well and leaves more flash and RAM free.
+ESPHome builds ESP32 targets with ESP-IDF's own CMake build, whichever framework is
+selected, so the four settings above become sdkconfig entries rather than PlatformIO board
+options. `framework: type: arduino` selects the Arduino API on top of that; it matches the
+WijiBoard's own `platformio.ini`, and `esp-idf` works just as well while leaving more flash
+and RAM free.
 
 `USB_CDC` puts the logs on the native USB port: under the Arduino framework it selects
 `Serial`, which the board file points at USB with `ARDUINO_USB_CDC_ON_BOOT=1`. On `esp-idf`
 that flag does not apply and the equivalent is `hardware_uart: USB_SERIAL_JTAG`.
+
+The board file's `arduino.ldscript` and `arduino.memory_type` need no equivalent here.
+Neither is a WijiBoard customization; both are the stock Adafruit values, and ESPHome reads
+neither. Linker scripts come from ESP-IDF, and `memory_type` only picks which set of
+precompiled Arduino libraries to link, which ESPHome skips in favour of building the
+Arduino core from source. The part of them that does matter, QIO flash at 80MHz, is covered
+by `flash_mode` and `flash_frequency` above. For the same reason `platformio_options` is
+ignored on ESP32 unless the build is forced onto the PlatformIO toolchain.
 
 ## Wiring
 
