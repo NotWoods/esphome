@@ -26,16 +26,19 @@ esp32:
   flash_frequency: 80MHZ
   cpu_frequency: 240MHZ
   framework:
-    type: esp-idf
+    type: arduino
 
 logger:
-  hardware_uart: USB_SERIAL_JTAG
+  hardware_uart: USB_CDC
 ```
 
 ESPHome writes the flash size, mode and speed into the build itself, so those values
-override whatever the board file says. The `arduino` section of the board file and its
-`ARDUINO_USB_CDC_ON_BOOT` flags do not apply under ESP-IDF; `hardware_uart` above is what
-puts the logs on the native USB port instead.
+override whatever the board file says. The framework here matches the WijiBoard's own
+`platformio.ini`; `esp-idf` works just as well and leaves more flash and RAM free.
+
+`USB_CDC` puts the logs on the native USB port: under the Arduino framework it selects
+`Serial`, which the board file points at USB with `ARDUINO_USB_CDC_ON_BOOT=1`. On `esp-idf`
+that flag does not apply and the equivalent is `hardware_uart: USB_SERIAL_JTAG`.
 
 ## Wiring
 

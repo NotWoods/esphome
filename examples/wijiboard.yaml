@@ -23,6 +23,8 @@ external_components:
 # The stock WijiBoard PlatformIO board is an Adafruit Feather ESP32-S3 without PSRAM,
 # carrying 8MB of flash instead of the Feather's 4MB. ESPHome already knows that board and
 # sets the flash size, mode and speed itself, so the custom board file is not needed here.
+# The framework matches the WijiBoard's own platformio.ini; esp-idf also works and leaves
+# more flash and RAM free, so switch to it if you run short.
 esp32:
   board: adafruit_feather_esp32s3_nopsram
   flash_size: 8MB
@@ -30,11 +32,12 @@ esp32:
   flash_frequency: 80MHZ
   cpu_frequency: 240MHZ
   framework:
-    type: esp-idf
+    type: arduino
 
-# The module logs over its native USB port rather than a separate serial chip.
+# The module logs over its native USB port rather than a separate serial chip. Under the
+# Arduino framework that port is Serial, which the board file wires to USB on boot.
 logger:
-  hardware_uart: USB_SERIAL_JTAG
+  hardware_uart: USB_CDC
 
 api:
   encryption:
@@ -78,9 +81,11 @@ api:
       then:
         - wijiboard.home: wiji
 
+# A bare `encryption:` reuses the API key above, so uploads are authenticated and
+# encrypted without a second secret.
 ota:
   - platform: esphome
-    password: !secret ota_password
+    encryption:
 
 wifi:
   ssid: !secret wifi_ssid
